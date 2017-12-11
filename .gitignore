@@ -1,0 +1,4 @@
+*.py[cod]
+gui/__pycache__
+ui/__pycache__
+.idea
