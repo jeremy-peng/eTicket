@@ -9,5 +9,6 @@ if __name__ == "__main__":
     if (dialog.exec() == QDialog.Accepted):
         print(dialog.getInput())
 
+
     sys.exit(app.exec_())
 

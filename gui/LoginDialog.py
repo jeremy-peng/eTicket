@@ -1,5 +1,6 @@
 from ui.ui_login_dialog import Ui_LoginDialog
 from PyQt5.QtWidgets import QDialog
+from PyQt5.QtCore import QSettings
 
 class LoginDialog(QDialog):
 
@@ -15,3 +16,6 @@ class LoginDialog(QDialog):
 
     def getInput(self):
         return self.ui.textPhoneNum.text(), self.ui.textPhonePin.text()
+
+    def reject(self):
+        QDialog.reject()
