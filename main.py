@@ -11,6 +11,7 @@ if __name__ == "__main__":
     if (dialog.exec_() == QDialog.Accepted):
         loginName, pin = dialog.getInput()
         userData.loginName = loginName
+        userData.sync()
         sys.exit()
     else:
         sys.exit()

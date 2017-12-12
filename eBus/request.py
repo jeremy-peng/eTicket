@@ -1,8 +1,12 @@
 import requests
+import json
 
-url = 'http://ewrite.szebus.net/phone/login/new'
-
-kw = {'loginName': '18118728184', 'loginCode' : '8875'}
+LOGIN_NAME_STR = "loginName"
+CUSTOMER_NAME_STR = "customerName"
+KEY_CODE_STR = "KeyCode"
+CUSTOMER_ID_STR = "CustomerId"
+RETURN_CODE_STR = "returnCode"
+SUCCESS_CODE_STR = "500"
 
 
 def formatHeader(content):
@@ -31,8 +35,20 @@ def str2payload(s):
         kw[t[0]] = t[1]
     return kw
 
+def validateUserData(customerName, customerId, keyCode):
+    if ( customerName == None or len(customerName) == 0 or
+        customerId == None or len(customerId) == 0 or
+        keyCode == None or len(keyCode) == 0 ):
+        return False
+    url = "http://ewrite.szebus.net/phone/open"
+    kw = {CUSTOMER_NAME_STR : customerName,
+          CUSTOMER_ID_STR: customerId,
+          KEY_CODE_STR: keyCode}
+    r = requests.post(url, data = kw, headers = formatHeader(payload2Str(kw)))
+    response = r.json()
+    return response.get(RETURN_CODE_STR) == SUCCESS_CODE_STR
+
+
+
 if __name__ == "__main__":
-    print(str2payload("customerId=166015&customerName=18823188184&keyCode=e2a3fc18953547b3d74096973d7524b5&lineId=11896&vehTime=1732&beginDate=20171204&endDate=20171231"))
-    # payloadStr = payload2Str(kw)
-    # r = requests.post(url, data = kw, headers = formatHeader(payloadStr))
-    # print(r.json())
+    print(validateUserData("18118728184", "307475", "704bc707a35c4c8cfdf08333322b9174"))
