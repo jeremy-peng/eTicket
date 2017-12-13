@@ -1,20 +1,19 @@
-from PyQt5.QtWidgets import QApplication, QDialog
 import sys
-
-from gui.LoginDialog import LoginDialog
 from config import  userData
+from eBus import  request
+from gui import  Application
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    dialog = LoginDialog()
-    dialog.loginName = userData.loginName
-    if (dialog.exec_() == QDialog.Accepted):
-        loginName, pin = dialog.getInput()
-        userData.loginName = loginName
-        userData.sync()
-        sys.exit()
+
+
+def main():
+    app = Application.App(sys.argv)
+    if request.validateUserData(userData.loginName, userData.customerId, userData.keyCode):
+        app.showMainWindow()
     else:
-        sys.exit()
+        app.showLoginDialog()
 
     sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()
 

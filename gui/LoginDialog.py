@@ -1,5 +1,6 @@
 from ui.ui_login_dialog import Ui_LoginDialog
 from PyQt5.QtWidgets import QDialog
+from PyQt5.QtCore import QtDebugMsg
 
 from config import userData
 
@@ -24,6 +25,10 @@ class LoginDialog(QDialog):
 
     def showEvent(self, QShowEvent):
         self.ui.textPhoneNum.setText(self.loginName)
+
+    def onBtnSendPinClicked(self):
+        print("test")
+
 
 
 
