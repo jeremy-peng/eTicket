@@ -1,8 +1,6 @@
 from ui.ui_login_dialog import Ui_LoginDialog
-from PyQt5.QtWidgets import QDialog
-from PyQt5.QtCore import QtDebugMsg
-
-from config import userData
+from PyQt5.QtWidgets import QDialog, QMessageBox
+from eBus import  request
 
 class LoginDialog(QDialog):
 
@@ -10,6 +8,8 @@ class LoginDialog(QDialog):
         super(LoginDialog, self).__init__()
         self.loginName = ""
         self.initUI()
+        self.keyCode = ''
+        self.customerId = ''
 
 
     def initUI(self):
@@ -17,8 +17,22 @@ class LoginDialog(QDialog):
         self.ui.setupUi(self)
 
 
-    def getInput(self):
-        return self.ui.textPhoneNum.text(), self.ui.textPhonePin.text()
+    def getLoginInfo(self):
+        return self.ui.textPhoneNum.text(), self.customerId, self.keyCode
+
+    def accept(self):
+        phoneNum = self.ui.textPhoneNum.text()
+        pinCode = self.ui.textPhonePin.text()
+        if phoneNum == "" or pinCode == "":
+            QMessageBox.critical(self, "Error", "Input can't be empty")
+            return
+        customerId, keyCode = request.requireLogin(phoneNum, pinCode)
+        if (keyCode == '' or customerId == ''):
+            QMessageBox.critical(self, "Error", "Pin code isn't correct.")
+            return
+        self.keyCode = keyCode
+        self.customerId = customerId
+        super(LoginDialog, self).accept()
 
     def reject(self):
         super(LoginDialog, self).reject()
@@ -27,7 +41,14 @@ class LoginDialog(QDialog):
         self.ui.textPhoneNum.setText(self.loginName)
 
     def onBtnSendPinClicked(self):
-        print("test")
+        phoneNum = self.ui.textPhoneNum.text()
+        if len(phoneNum) != 11 :
+            QMessageBox.critical(self, "Error", "Phone number must be 11 digit.")
+            return
+        if request.requestSendPinCode(phoneNum):
+            QMessageBox.information(self, "Info", "Send phone pin successfully..")
+
+
 
 
 

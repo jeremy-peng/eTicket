@@ -1,5 +1,8 @@
-from PyQt5.QtWidgets import QApplication, QDialog
+import time
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QApplication, QDialog, QSplashScreen
 import sys
+import ui.eTicket
 
 from gui.LoginDialog import LoginDialog
 from gui.MainWindow import MainWindow
@@ -22,9 +25,22 @@ class App(QApplication):
         dialog = LoginDialog()
         dialog.loginName = userData.loginName
         if (dialog.exec_() == QDialog.Accepted):
-            loginName, pin = dialog.getInput()
-            userData.loginName = loginName
-            userData.sync()
-            self.showMainWindow()
+            userData.loginName,  userData.customerId, userData.keyCode = dialog.getLoginInfo()
+            #re check login info
+            if not request.validateUserData(userData.loginName, userData.customerId, userData.keyCode):
+                self.showLoginDialog()
+                userData.sync()
+            else:
+                self.showMainWindow()
         else:
             sys.exit()
+
+    def login(self):
+        splash = QSplashScreen()
+        splash.setPixmap(QPixmap(":/image/bus.png"))
+        splash.showMessage("Login in...")
+        splash.show()
+        if request.validateUserData(userData.loginName, userData.customerId, userData.keyCode):
+            self.showMainWindow()
+        else:
+            self.showLoginDialog()
