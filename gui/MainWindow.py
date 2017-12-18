@@ -10,10 +10,6 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        d = QDate(2017, 12, 18)
-        t = QTextCharFormat()
-        t.setBackground(Qt.green)
-        self.ui.calendarTicket.setDateTextFormat(d, t)
 
 
     def setUserName(self, name):
