@@ -95,5 +95,24 @@ def requireSearchBus(lineNum : str):
     return util.json2obj(response)
 
 
+def requireBusDetail(lineId : str, loginName : str, customerId : str, keyCode : str, vehTime : str, onStationId : str, offStationId : str):
+    if (lineId == "" or loginName == "" or customerId == "" or keyCode == ""
+            or vehTime == "" or onStationId == "" or offStationId == ""):
+        return None
+    url = "http://eread.szebus.net/line/phone/detail"
+    kw = {'lineId' : lineId,
+          "id" : customerId,
+          LOGIN_NAME_STR : loginName,
+          KEY_CODE_STR: keyCode,
+          'vehTime' : vehTime,
+          'offStationId' : offStationId,
+          'onStationId' : onStationId}
+    r = requests.post(url, data = kw, headers = formatHeader(payload2Str(kw), url))
+    response = r.json()
+    if response.get(RETURN_CODE_STR) != SUCCESS_CODE_STR:
+        return None
+    return util.json2obj(response)
+
+
 if __name__ == "__main__":
     requireSearchBus("p177")

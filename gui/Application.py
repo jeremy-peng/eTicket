@@ -1,8 +1,7 @@
-import time
+import logging
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QDialog, QSplashScreen
 import sys
-import ui.eTicket
 
 from gui.LoginDialog import LoginDialog
 from gui.MainWindow import MainWindow
@@ -28,6 +27,7 @@ class App(QApplication):
             userData.loginName,  userData.customerId, userData.keyCode = dialog.getLoginInfo()
             #re check login info
             if not request.validateUserData(userData.loginName, userData.customerId, userData.keyCode):
+                logging.info("Login successful: %s,%s,%s" % (userData.loginName, userData.customerId, userData.keyCode))
                 self.showLoginDialog()
                 userData.sync()
             else:
@@ -41,6 +41,7 @@ class App(QApplication):
         splash.showMessage("Login in...")
         splash.show()
         if request.validateUserData(userData.loginName, userData.customerId, userData.keyCode):
+            logging.info("Login successful: %s,%s,%s" % (userData.loginName, userData.customerId, userData.keyCode))
             self.showMainWindow()
         else:
             self.showLoginDialog()

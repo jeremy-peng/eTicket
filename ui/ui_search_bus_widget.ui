@@ -54,7 +54,18 @@
        </layout>
       </item>
       <item>
-       <widget class="QListWidget" name="listBusLine"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,3">
+        <item>
+         <widget class="QListWidget" name="listBusLine">
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="textBusInfo"/>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -134,8 +145,41 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>textBusLine</sender>
+   <signal>returnPressed()</signal>
+   <receiver>btnSearchBus</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>269</x>
+     <y>44</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>346</x>
+     <y>38</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>listBusLine</sender>
+   <signal>currentRowChanged(int)</signal>
+   <receiver>SearchBusWidget</receiver>
+   <slot>onBusLineSeletedChange(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>131</x>
+     <y>110</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>0</x>
+     <y>6</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onBtnSearchBusClicked()</slot>
+  <slot>onBusLineSeletedChange(int)</slot>
  </slots>
 </ui>

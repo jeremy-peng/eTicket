@@ -31,9 +31,18 @@ class Ui_SearchBusWidget(object):
         self.btnSearchBus.setObjectName("btnSearchBus")
         self.horizontalLayout_4.addWidget(self.btnSearchBus)
         self.verticalLayout_3.addLayout(self.horizontalLayout_4)
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.listBusLine = QtWidgets.QListWidget(self.groupBox_2)
+        self.listBusLine.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.listBusLine.setObjectName("listBusLine")
-        self.verticalLayout_3.addWidget(self.listBusLine)
+        self.horizontalLayout_3.addWidget(self.listBusLine)
+        self.textBusInfo = QtWidgets.QTextEdit(self.groupBox_2)
+        self.textBusInfo.setObjectName("textBusInfo")
+        self.horizontalLayout_3.addWidget(self.textBusInfo)
+        self.horizontalLayout_3.setStretch(0, 1)
+        self.horizontalLayout_3.setStretch(1, 3)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_3)
         self.verticalLayout_2.addWidget(self.groupBox_2)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
@@ -60,6 +69,8 @@ class Ui_SearchBusWidget(object):
 
         self.retranslateUi(SearchBusWidget)
         self.btnSearchBus.clicked.connect(SearchBusWidget.onBtnSearchBusClicked)
+        self.textBusLine.returnPressed.connect(self.btnSearchBus.click)
+        self.listBusLine.currentRowChanged['int'].connect(SearchBusWidget.onBusLineSeletedChange)
         QtCore.QMetaObject.connectSlotsByName(SearchBusWidget)
 
     def retranslateUi(self, SearchBusWidget):
