@@ -12,6 +12,14 @@ def json2obj(data):
     elif isinstance(data, dict):
         return json2obj(json.dumps(data))
 
+def combindList(l1 : list, l2 : list, connector : str):
+    if len(l1) != len(l2):
+        return None
+    ret = []
+    for i, value in enumerate(l1):
+        ret.append(value + connector + l2[i])
+    return ret
+
 
 if __name__ == '__main__':
     data = """

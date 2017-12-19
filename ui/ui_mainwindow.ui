@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>813</width>
-    <height>867</height>
+    <width>1043</width>
+    <height>891</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -59,19 +59,23 @@
        <attribute name="title">
         <string>查询购票</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
            <widget class="SearchBusWidget" name="searchBusWidget" native="true"/>
           </item>
           <item>
-           <widget class="RemindTicketWidget" name="remainTicketWidget" native="true"/>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="RemindTicketWidget" name="remainTicketWidget" native="true"/>
+            </item>
+            <item>
+             <widget class="BuyTicketWidget" name="buyTicketWidget" native="true"/>
+            </item>
+           </layout>
           </item>
          </layout>
-        </item>
-        <item>
-         <widget class="BuyTicketWidget" name="buyTicketWidget" native="true"/>
         </item>
        </layout>
       </widget>
@@ -89,7 +93,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>813</width>
+     <width>1043</width>
      <height>26</height>
     </rect>
    </property>

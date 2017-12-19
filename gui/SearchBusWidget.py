@@ -3,6 +3,7 @@ from ui.ui_search_bus_widget import Ui_SearchBusWidget
 from eBus import request
 import logging
 from config import userData
+import  util
 
 
 class SearchBusWidget(QWidget):
@@ -11,6 +12,7 @@ class SearchBusWidget(QWidget):
         self.ui = Ui_SearchBusWidget()
         self.ui.setupUi(self)
         self.curLineListObj = None
+        self.curBusDetailObj =None
 
     def onBtnSearchBusClicked(self):
         busLine = self.ui.textBusLine.text()
@@ -36,6 +38,7 @@ class SearchBusWidget(QWidget):
         self.ui.listOnStation.clear()
         self.ui.textBusInfo.clear()
         self.curLineListObj = None
+
 
     def updateBusLineList(self, lineListObj):
         self.clearBusLine()
@@ -65,14 +68,27 @@ class SearchBusWidget(QWidget):
         if busDetailObj is None:
             logging.info("bus detail is none.")
             return
-        self.updateBusInfoText(busDetailObj.returnData)
+        self.curBusDetailObj = busDetailObj.returnData
+        self.updateBusInfoText(self.curBusDetailObj)
+        self.updateOnOffStation(self.curBusDetailObj)
 
-    def updateBusInfoText(self, busDetailData):
-        if busDetailData is None:
+    def updateOnOffStation(self, busDetailObj):
+        onStationNames, onStationTimes = busDetailObj.onStations.split(';'), busDetailObj.onTimes.split(';')
+        offStationNames, offStationTimes = busDetailObj.offStations.split(';'), busDetailObj.offTimes.split(';')
+        onStationText = util.combindList(onStationNames, onStationTimes, '-')
+        offStationText = util.combindList(offStationNames, offStationTimes, '-')
+        self.ui.listOffStation.clear()
+        self.ui.listOnStation.clear()
+        self.ui.listOnStation.addItems(onStationText)
+        self.ui.listOffStation.addItems(offStationText)
+
+
+    def updateBusInfoText(self, busDetailObj):
+        if busDetailObj is None:
             return
         busInfoText = "lineId: {0}\n" \
         "lineNo: {1}\n" \
         "mileage: {2}(km)\n" \
         "needTime: {3}(min)\n"
-        busInfoText = busInfoText.format(busDetailData.lineId, busDetailData.lineNo, busDetailData.mileage, busDetailData.needTime)
+        busInfoText = busInfoText.format(busDetailObj.lineId, busDetailObj.lineNo, busDetailObj.mileage, busDetailObj.needTime)
         self.ui.textBusInfo.setText(busInfoText)
