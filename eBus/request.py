@@ -95,7 +95,8 @@ def requireSearchBus(lineNum : str):
     return util.json2obj(response)
 
 
-def requireBusDetail(lineId : str, loginName : str, customerId : str, keyCode : str, vehTime : str, onStationId : str, offStationId : str):
+def requireBusDetail(lineId : str, loginName : str, customerId : str, keyCode : str,
+                     vehTime : str, onStationId : str, offStationId : str):
     if (lineId == "" or loginName == "" or customerId == "" or keyCode == ""
             or vehTime == "" or onStationId == "" or offStationId == ""):
         return None
@@ -107,6 +108,26 @@ def requireBusDetail(lineId : str, loginName : str, customerId : str, keyCode : 
           'vehTime' : vehTime,
           'offStationId' : offStationId,
           'onStationId' : onStationId}
+    r = requests.post(url, data = kw, headers = formatHeader(payload2Str(kw), url))
+    response = r.json()
+    if response.get(RETURN_CODE_STR) != SUCCESS_CODE_STR:
+        return None
+    return util.json2obj(response)
+
+
+def requireRemindTicket(customerId : str, customerName : str, keyCode : str, lineId : str,
+                        vehTime : str, beginDate : str, endDate : str):
+    if customerId == "" or customerName == "" or keyCode == "" or lineId == "" \
+        or vehTime == "" or beginDate == "" or endDate == "":
+        return None
+    url = "http://eread.szebus.net/line/phone/detail"
+    kw = {CUSTOMER_ID_STR : customerId,
+          CUSTOMER_NAME_STR : customerName,
+          KEY_CODE_STR : keyCode,
+          'lineId': lineId,
+          'vehTime' : vehTime,
+          'beginDate' : beginDate,
+          'endDate' : endDate}
     r = requests.post(url, data = kw, headers = formatHeader(payload2Str(kw), url))
     response = r.json()
     if response.get(RETURN_CODE_STR) != SUCCESS_CODE_STR:

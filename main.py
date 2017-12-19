@@ -9,8 +9,9 @@ def main():
         app = Application.App(sys.argv)
         app.login()
         sys.exit(app.exec_())
-    except:
-        print(sys.exc_info()[0])
+    except Exception:
+        print(sys.exc_info()[0],':', sys.exc_info()[1])
+        sys.exit()
 
 def initLog():
     logging.basicConfig(level=logging.INFO,

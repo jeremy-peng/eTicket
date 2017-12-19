@@ -66,7 +66,7 @@
            <widget class="SearchBusWidget" name="searchBusWidget" native="true"/>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout">
+           <layout class="QVBoxLayout" name="verticalLayout" stretch="2,3">
             <item>
              <widget class="RemindTicketWidget" name="remainTicketWidget" native="true"/>
             </item>
@@ -94,7 +94,7 @@
      <x>0</x>
      <y>0</y>
      <width>1043</width>
-     <height>26</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

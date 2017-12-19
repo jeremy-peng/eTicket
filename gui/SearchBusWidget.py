@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QMessageBox
+from PyQt5.QtCore import pyqtSignal
 from ui.ui_search_bus_widget import Ui_SearchBusWidget
 from eBus import request
 import logging
@@ -7,6 +8,7 @@ import  util
 
 
 class SearchBusWidget(QWidget):
+    selectedBus = pyqtSignal(str, str)
     def __init__(self, parent):
         super(SearchBusWidget, self).__init__(parent)
         self.ui = Ui_SearchBusWidget()
@@ -62,21 +64,25 @@ class SearchBusWidget(QWidget):
         lineInfo = self.curLineListObj.returnData[index]
         lineText, lineId = lineInfo.lineNo, lineInfo.lineId
         logging.info("select line:%s id:%s" %(lineText, lineId))
+        #require detail bus info
         busDetailObj = request.requireBusDetail(lineId, userData.loginName, userData.customerId, userData.keyCode,
                                                 lineInfo.vehTime, lineInfo.onStationId, lineInfo.offStationId)
-        print(busDetailObj)
         if busDetailObj is None:
             logging.info("bus detail is none.")
             return
         self.curBusDetailObj = busDetailObj.returnData
         self.updateBusInfoText(self.curBusDetailObj)
         self.updateOnOffStation(self.curBusDetailObj)
+        self.selectedBus.emit(str(lineId), self.curBusDetailObj.startTime)
 
     def updateOnOffStation(self, busDetailObj):
-        onStationNames, onStationTimes = busDetailObj.onStations.split(';'), busDetailObj.onTimes.split(';')
-        offStationNames, offStationTimes = busDetailObj.offStations.split(';'), busDetailObj.offTimes.split(';')
-        onStationText = util.combindList(onStationNames, onStationTimes, '-')
-        offStationText = util.combindList(offStationNames, offStationTimes, '-')
+        onStationNames, onStationTimes = busDetailObj.onStations.split(';'),\
+                                         util.getFormatTime(busDetailObj.onTimes.split(';'))
+        offStationNames, offStationTimes = busDetailObj.offStations.split(';'),\
+                                           util.getFormatTime(busDetailObj.offTimes.split(';'))
+        connector = ' - '
+        onStationText = util.combindList(onStationNames, onStationTimes, connector)
+        offStationText = util.combindList(offStationNames, offStationTimes, connector)
         self.ui.listOffStation.clear()
         self.ui.listOnStation.clear()
         self.ui.listOnStation.addItems(onStationText)

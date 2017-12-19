@@ -12,7 +12,14 @@ def json2obj(data):
     elif isinstance(data, dict):
         return json2obj(json.dumps(data))
 
+
 def combindList(l1 : list, l2 : list, connector : str):
+    '''
+    :param l1: ["a", "b", "c"]
+    :param l2: ['1', '2', '3']
+    :param connector:  '-'
+    :return: ['a-1', 'b-2', 'c-3']
+    '''
     if len(l1) != len(l2):
         return None
     ret = []
@@ -20,6 +27,16 @@ def combindList(l1 : list, l2 : list, connector : str):
         ret.append(value + connector + l2[i])
     return ret
 
+def _formatTime(timeStr : str):
+    timeStr = timeStr[:2] + ":" + timeStr[2:]
+    return timeStr
+
+def getFormatTime(timeList : list):
+    """
+    :param timeList: ['1122','3344']
+    :return: ['11:22', '33:44']
+    """
+    return list(map(_formatTime, timeList))
 
 if __name__ == '__main__':
     data = """
