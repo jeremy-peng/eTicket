@@ -2,6 +2,7 @@ import sys
 from gui import  Application
 import  logging
 
+
 def combindList(l1 : list, l2 : list, connector : str):
     if len(l1) != len(l2):
         return None

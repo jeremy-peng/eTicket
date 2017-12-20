@@ -1,8 +1,8 @@
-from PyQt5.QtCore import QDate, Qt
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow
 from ui.ui_mainwindow import Ui_MainWindow
-from PyQt5.QtGui import QTextCharFormat, QColor
 import  logging
+import ui.eTicket
 
 
 class MainWindow(QMainWindow):
@@ -11,6 +11,7 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.initSignals()
+        self.initUI()
 
 
     def setUserName(self, name):
@@ -19,6 +20,9 @@ class MainWindow(QMainWindow):
 
     def initSignals(self):
         self.ui.searchBusWidget.selectedBus.connect(self.ui.remainTicketWidget.onSelectedBus)
+
+    def initUI(self):
+        self.setWindowIcon(QIcon(":/image/bus.jpg"))
 
 
 

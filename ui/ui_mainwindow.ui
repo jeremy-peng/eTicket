@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>:/image/bus.jpg</normaloff>:/image/bus.jpg</iconset>
-  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
@@ -61,7 +57,7 @@
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,3">
           <item>
            <widget class="SearchBusWidget" name="searchBusWidget" native="true"/>
           </item>
@@ -120,6 +116,5 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
  <connections/>
 </ui>

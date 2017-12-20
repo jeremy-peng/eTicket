@@ -12,9 +12,6 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1043, 891)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/image/bus.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        MainWindow.setWindowIcon(icon)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -52,6 +49,8 @@ class Ui_MainWindow(object):
         self.verticalLayout.setStretch(0, 2)
         self.verticalLayout.setStretch(1, 3)
         self.horizontalLayout.addLayout(self.verticalLayout)
+        self.horizontalLayout.setStretch(0, 2)
+        self.horizontalLayout.setStretch(1, 3)
         self.horizontalLayout_3.addLayout(self.horizontalLayout)
         self.tabWidget.addTab(self.tab, "")
         self.tab_2 = QtWidgets.QWidget()

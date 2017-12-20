@@ -12,9 +12,11 @@ from eBus import request
 
 class RemindTicketWidget(QWidget):
     hasTicketText = QTextCharFormat()
+    hasTicketText.setForeground(Qt.black)
     hasTicketText.setBackground(Qt.green)
 
     noneTicketText = QTextCharFormat()
+    noneTicketText.setForeground(Qt.white)
     noneTicketText.setBackground(Qt.red)
 
     def __init__(self, parent = None):
@@ -64,6 +66,8 @@ class RemindTicketWidget(QWidget):
     def updateCalendarTicketStatus(self, startDate : QDate, ticketList : list):
         if startDate.isValid() == False or len(ticketList) == 0:
             return
+        # clear all date format
+        self.ui.calendarTicket.setDateTextFormat(QDate(), QTextCharFormat())
 
         for remindTicket in ticketList:
             if int(remindTicket) > 0:

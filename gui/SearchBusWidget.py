@@ -75,7 +75,7 @@ class SearchBusWidget(QWidget):
         self.curBusDetailObj = busDetailObj.returnData
         self.updateBusInfoText(self.curBusDetailObj)
         self.updateOnOffStation(self.curBusDetailObj)
-        self.selectedBus.emit(str(lineId), self.curBusDetailObj.startTime)
+        self.selectedBus.emit(str(lineId), self.curBusDetailObj.vehTime)
 
     def updateOnOffStation(self, busDetailObj):
         onStationNames, onStationTimes = busDetailObj.onStations.split(';'),\
@@ -97,6 +97,16 @@ class SearchBusWidget(QWidget):
         busInfoText = "lineId: {0}\n" \
         "lineNo: {1}\n" \
         "mileage: {2}(km)\n" \
-        "needTime: {3}(min)\n"
-        busInfoText = busInfoText.format(busDetailObj.lineId, busDetailObj.lineNo, busDetailObj.mileage, busDetailObj.needTime)
+        "needTime: {3}(min)\n" \
+        "isCl: {4}\n" \
+        "openType: {5}\n" \
+        "perNum: {6} \n" \
+        "price: {7}\n" \
+        "tradePrice: {8}\n" \
+        "status: {9}\n"
+        busInfoText = busInfoText.format(busDetailObj.lineId, busDetailObj.lineNo,
+                                         busDetailObj.mileage, busDetailObj.needTime, busDetailObj.isCl,
+                                         busDetailObj.openType, busDetailObj.perNum, busDetailObj.price,
+                                         busDetailObj.tradePrice, busDetailObj.status
+                                         )
         self.ui.textBusInfo.setText(busInfoText)
