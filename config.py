@@ -9,6 +9,7 @@ class UserData(object):
     LOGIN_NAME_STR = "loginName"
     KEY_CODE_STR = "KeyCode"
     CUSTOMER_ID_STR = "CustomerId"
+    LAST_INPUT_BUS_NUM = "LastInputBusNum"
 
     def __init__(self):
         self.settings = QSettings("settings.ini", QSettings.IniFormat)
@@ -33,6 +34,14 @@ class UserData(object):
     @customerId.setter
     def customerId(self, id):
         self.settings.setValue(UserData.CUSTOMER_ID_STR, id)
+
+    @property
+    def lastBusNum(self):
+        return self.settings.value(UserData.LAST_INPUT_BUS_NUM, "")
+
+    @lastBusNum.setter
+    def lastBusNum(self, busNum):
+        self.settings.setValue(UserData.LAST_INPUT_BUS_NUM, busNum)
 
     def sync(self):
         self.settings.sync()

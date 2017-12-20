@@ -120,7 +120,7 @@ def requireRemindTicket(customerId : str, customerName : str, keyCode : str, lin
     if customerId == "" or customerName == "" or keyCode == "" or lineId == "" \
         or vehTime == "" or beginDate == "" or endDate == "":
         return None
-    url = "http://eread.szebus.net/line/phone/detail"
+    url = "http://eread.szebus.net/bc/phone/surplus/ticket/new"
     kw = {CUSTOMER_ID_STR : customerId,
           CUSTOMER_NAME_STR : customerName,
           KEY_CODE_STR : keyCode,

@@ -15,6 +15,7 @@ class SearchBusWidget(QWidget):
         self.ui.setupUi(self)
         self.curLineListObj = None
         self.curBusDetailObj =None
+        self.ui.textBusLine.setText(userData.lastBusNum)
 
     def onBtnSearchBusClicked(self):
         busLine = self.ui.textBusLine.text()
@@ -32,6 +33,7 @@ class SearchBusWidget(QWidget):
             self.clearBusLine()
             return
         self.updateBusLineList(busLineListObj)
+        userData.lastBusNum = busLine
 
 
     def clearBusLine(self):
@@ -81,8 +83,8 @@ class SearchBusWidget(QWidget):
         offStationNames, offStationTimes = busDetailObj.offStations.split(';'),\
                                            util.getFormatTime(busDetailObj.offTimes.split(';'))
         connector = ' - '
-        onStationText = util.combindList(onStationNames, onStationTimes, connector)
-        offStationText = util.combindList(offStationNames, offStationTimes, connector)
+        onStationText = util.combineList(onStationNames, onStationTimes, connector)
+        offStationText = util.combineList(offStationNames, offStationTimes, connector)
         self.ui.listOffStation.clear()
         self.ui.listOnStation.clear()
         self.ui.listOnStation.addItems(onStationText)
