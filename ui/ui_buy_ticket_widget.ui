@@ -47,33 +47,37 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QCalendarWidget" name="calendarWidget"/>
+         <widget class="QCalendarWidget" name="calendarWidget">
+          <property name="verticalHeaderFormat">
+           <enum>QCalendarWidget::NoVerticalHeader</enum>
+          </property>
+         </widget>
         </item>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="btnSelectAllDays">
             <property name="text">
              <string>全选</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_3">
+           <widget class="QPushButton" name="btnInvertSelectedDays">
             <property name="text">
              <string>反选</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_4">
+           <widget class="QPushButton" name="btnSelectAllWorkDays">
             <property name="text">
              <string>全工作日</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_5">
+           <widget class="QPushButton" name="btnSelectAllWeekDays">
             <property name="text">
              <string>全周末</string>
             </property>
@@ -109,7 +113,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit">
+         <widget class="QLineEdit" name="textSZBusCard">
           <property name="maximumSize">
            <size>
             <width>100</width>
@@ -119,7 +123,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="btnBuyTicket">
           <property name="text">
            <string>购票</string>
           </property>
@@ -143,7 +147,7 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QCheckBox" name="checkBox">
+         <widget class="QCheckBox" name="checkAutoRefresh">
           <property name="text">
            <string>自动刷票</string>
           </property>
@@ -157,7 +161,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_2">
+         <widget class="QLineEdit" name="textRefreshInterval">
           <property name="maximumSize">
            <size>
             <width>100</width>

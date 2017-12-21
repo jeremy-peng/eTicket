@@ -24,6 +24,7 @@ class Ui_remainTicketWidget(object):
         self.calendarTicket.setGridVisible(True)
         self.calendarTicket.setSelectionMode(QtWidgets.QCalendarWidget.NoSelection)
         self.calendarTicket.setHorizontalHeaderFormat(QtWidgets.QCalendarWidget.ShortDayNames)
+        self.calendarTicket.setVerticalHeaderFormat(QtWidgets.QCalendarWidget.NoVerticalHeader)
         self.calendarTicket.setNavigationBarVisible(True)
         self.calendarTicket.setDateEditEnabled(False)
         self.calendarTicket.setObjectName("calendarTicket")

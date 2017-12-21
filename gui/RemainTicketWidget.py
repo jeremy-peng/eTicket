@@ -2,7 +2,7 @@
 
 from PyQt5.QtCore import QDate, Qt
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtGui import QTextCharFormat, QColor
+from PyQt5.QtGui import QTextCharFormat
 
 from ui.ui_remain_ticket_widget import Ui_remainTicketWidget
 from config import userData

@@ -46,6 +46,9 @@
         <property name="horizontalHeaderFormat">
          <enum>QCalendarWidget::ShortDayNames</enum>
         </property>
+        <property name="verticalHeaderFormat">
+         <enum>QCalendarWidget::NoVerticalHeader</enum>
+        </property>
         <property name="navigationBarVisible">
          <bool>true</bool>
         </property>

@@ -1,4 +1,7 @@
 import sys
+
+from PyQt5.QtCore import QDate
+
 from gui import  Application
 import  logging
 
@@ -23,8 +26,10 @@ def main():
     a = ["1133", "2222"]
     b = ["3444" ,"4444"]
     #c = combindList(a, b, '-')
-    c= getFormatTime(a)
-    print(c)
+    for i in range(1, 32):
+        date = QDate(2017,12,i)
+        print(date.dayOfWeek())
+
 
 if __name__ == "__main__":
     main()
