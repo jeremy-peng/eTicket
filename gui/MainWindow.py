@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow
 from ui.ui_mainwindow import Ui_MainWindow
@@ -20,6 +23,7 @@ class MainWindow(QMainWindow):
 
     def initSignals(self):
         self.ui.searchBusWidget.selectedBus.connect(self.ui.remainTicketWidget.onSelectedBus)
+        self.ui.buyTicketWidget.requireBusInfo.connect(self.ui.searchBusWidget.onRequireBusInfo)
 
     def initUI(self):
         self.setWindowIcon(QIcon(":/image/bus.jpg"))

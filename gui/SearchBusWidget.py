@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 from PyQt5.QtWidgets import QWidget, QMessageBox
 from PyQt5.QtCore import pyqtSignal
 from ui.ui_search_bus_widget import Ui_SearchBusWidget
@@ -5,6 +8,7 @@ from eBus import request
 import logging
 from config import userData
 import  util
+from gui.BusInfo import BusInfo
 
 
 class SearchBusWidget(QWidget):
@@ -110,3 +114,23 @@ class SearchBusWidget(QWidget):
                                          busDetailObj.tradePrice, busDetailObj.status
                                          )
         self.ui.textBusInfo.setText(busInfoText)
+
+    def onRequireBusInfo(self, busInfo : BusInfo):
+        logging.info("Try require bus info")
+        if (self.curBusDetailObj is None):
+            QMessageBox.critical(self, "Error", "Please select bus line first.")
+            return
+        onStationIndex = self.ui.listOnStation.currentRow()
+        if onStationIndex < 0:
+            QMessageBox.critical(self, "Error", "Please select on station.")
+            return
+        offStationIndex = self.ui.listOffStation.currentRow()
+        if offStationIndex < 0:
+            QMessageBox.critical(self, "Error", "Please select off station.")
+            return
+        busInfo.lineId = self.curBusDetailObj.lineId
+        busInfo.vehTime = self.curBusDetailObj.vehTime
+        busInfo.startTime = self.curBusDetailObj.onTimes.split(';')[onStationIndex]
+        busInfo.tradePrice = self.curBusDetailObj.tradePrice
+        busInfo.onStationId = self.curBusDetailObj.onStationIds.split(';')[onStationIndex]
+        busInfo.offStationId = self.curBusDetailObj.offStationIds.split(';')[offStationIndex]

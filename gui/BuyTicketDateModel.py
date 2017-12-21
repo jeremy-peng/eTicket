@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 from PyQt5.QtCore import QDate
 
 
@@ -11,6 +14,7 @@ class BuyTicketDateModel(object):
     def setDate(self, year : int, month : int):
         self._year, self._month = year, month
         self.genAllDaySet()
+        self.selectedDays.clear()
 
     @property
     def year(self):
@@ -34,7 +38,10 @@ class BuyTicketDateModel(object):
         self.selectedDays.append(date)
 
     def removeDate(self, date : QDate):
-        self.selectedDays.remove(date)
+        for i, d in enumerate(self.selectedDays):
+            if d == date:
+                self.selectedDays.remove(d)
+                break
 
     def genAllDaySet(self):
         curDate = QDate(self._year, self._month, 1)
@@ -59,7 +66,6 @@ class BuyTicketDateModel(object):
     def selectAllWeekDays(self):
         self.selectedDays.clear()
         for date in self.allDaySet:
-            print(date.dayOfWeek())
             if date.dayOfWeek() == 6 or date.dayOfWeek() == 7:
                 self.selectedDays.append(date)
 
@@ -67,7 +73,7 @@ class BuyTicketDateModel(object):
     def selectAllWorkDays(self):
         self.selectedDays.clear()
         for date in self.allDaySet:
-            if date.dayOfWeek != 6 and date.dayOfWeek != 7:
+            if date.dayOfWeek() != 6 and date.dayOfWeek() != 7:
                 self.selectedDays.append(date)
 
     def getSeletedDays(self):
@@ -75,3 +81,6 @@ class BuyTicketDateModel(object):
 
     def clearSelectedDays(self):
         self.selectedDays.clear()
+
+    def hasDate(self, date : QDate):
+        return date in self.selectedDays

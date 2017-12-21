@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
 import sys
 
 from PyQt5.QtCore import QDate
@@ -22,13 +24,26 @@ def formatTime(timeStr : str):
 def getFormatTime(timeList : list):
     return list(map(formatTime, timeList))
 
+
+class RefData(object):
+    def __init__(self):
+        self.a = ""
+        self.b = 0
+
+
+def funChangeData(d):
+    d.a = "aaaa"
+    d.b = 10
+
+
+
+
 def main():
-    a = ["1133", "2222"]
-    b = ["3444" ,"4444"]
-    #c = combindList(a, b, '-')
-    for i in range(1, 32):
-        date = QDate(2017,12,i)
-        print(date.dayOfWeek())
+    a = RefData()
+    print("%s, %s", (a.a, a.b))
+    funChangeData(a)
+    print("%s, %s", (a.a, a.b))
+
 
 
 if __name__ == "__main__":

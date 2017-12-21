@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 from ui.ui_login_dialog import Ui_LoginDialog
 from PyQt5.QtWidgets import QDialog, QMessageBox
 from eBus import  request
