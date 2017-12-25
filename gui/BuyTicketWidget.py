@@ -2,22 +2,23 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtGui import QTextCharFormat
-from PyQt5.QtWidgets import QWidget, QMessageBox, QMessageBox
+from PyQt5.QtWidgets import QWidget, QMessageBox
 from PyQt5.QtCore import QDate, Qt, pyqtSignal
 
-from gui.RemainTicketWidget import RemindTicketWidget
 from ui.ui_buy_ticket_widget import Ui_BuyTicketWidget
 from gui.BuyTicketDateModel import BuyTicketDateModel
 import logging
 from gui.BusInfo import BusInfo
 from config import userData
 from gui import TicketHelper
+from eBus import request
 
 class BuyTicketWidget(QWidget):
     BuyTicketText = QTextCharFormat()
     BuyTicketText.setForeground(Qt.black)
     BuyTicketText.setBackground(Qt.green)
     requireBusInfo = pyqtSignal(BusInfo)
+    calendarPageChanged = pyqtSignal(int, int)
 
 
     def __init__(self, parent = None):
@@ -37,6 +38,7 @@ class BuyTicketWidget(QWidget):
         self.ui.btnClear.clicked.connect(self.onClearAllDays)
         self.ui.btnBuyTicket.clicked.connect(self.onBuyTicket)
         self.ui.calendarWidget.currentPageChanged.connect(self.onCurrentPageChanged)
+        self.ui.calendarWidget.currentPageChanged.connect(self.calendarPageChanged)
         self.ui.calendarWidget.clicked.connect(self.onClickCalendar)
         self.ui.textSZBusCard.editingFinished.connect(self.onTextSZTEditFinished)
 
@@ -73,6 +75,9 @@ class BuyTicketWidget(QWidget):
         self.ticketDayModel.clearSelectedDays()
         self.updateBuyTicketDays(self.ticketDayModel.getSeletedDays())
 
+    def setCurrentPage(self, year : int, month : int):
+        self.ui.calendarWidget.setCurrentPage(year, month)
+
     def onCurrentPageChanged(self, year, month):
         self.ticketDayModel.setDate(year, month)
         self.updateBuyTicketDays(self.ticketDayModel.getSeletedDays())
@@ -107,12 +112,11 @@ class BuyTicketWidget(QWidget):
         if len(selectedDays) == 0:
             QMessageBox.critical(self, 'Error', 'Please select date first.')
 
-        remindTicketNum = TicketHelper.getRemindTicketNumber(busInfo.lineId, busInfo.vehTime,
+        remindTicketNum, ticketPriceList = TicketHelper.getRemindTicketNumber(busInfo.lineId, busInfo.vehTime,
                                                              self.ticketDayModel.year, self.ticketDayModel.month)
         if remindTicketNum is None or len(remindTicketNum) == 0 :
             return
         buyTicketDays = []
-        print(remindTicketNum)
         startDate = QDate(self.ticketDayModel.year, self.ticketDayModel.month, 1)
         allDateHasTicket = [QDate(self.ticketDayModel.year, self.ticketDayModel.month, i + 1) for i in range(startDate.daysInMonth())
                             if remindTicketNum[i] > 0 ]
@@ -121,7 +125,25 @@ class BuyTicketWidget(QWidget):
             if buyDay in allDateHasTicket:
                 buyTicketDays.append(buyDay)
 
-        print(buyTicketDays)
+        if len(buyTicketDays) == 0:
+            return
+
+        buyTicketDayStrList = []
+        for buyDay in buyTicketDays:
+            buyTicketDayStrList.append(buyDay.toString('yyyy-MM-dd'))
+
+        logging.info('select days has ticket' + str(buyTicketDayStrList))
+
+        totalPrice = busInfo.tradePrice * len(buyTicketDayStrList)
+        buyTicketResponObj = request.requireBuyTicket(userData.customerId, userData.loginName, userData.keyCode,
+                                 busInfo.lineId, busInfo.vehTime, busInfo.startTime,
+                                 busInfo.onStationId, busInfo.offStationId, totalPrice,
+                                 userData.sztNum, buyTicketDayStrList)
+        if buyTicketResponObj is None:
+            QMessageBox.critical(self, "Error", 'fail to buy ticket')
+            return
+
+
 
 
     def onTextSZTEditFinished(self):

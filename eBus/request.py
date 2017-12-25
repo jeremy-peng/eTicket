@@ -157,12 +157,11 @@ def requireBuyTicket(userId : str, userName : str, keyCode : str, lineId : str,
           'payType' : 3, # use SZ Bus car
           'sztNo' : sztNo
     }
-    print(formatHeader(payload2Str(kw), url))
-    #r = requests.post(url, data = kw, headers = formatHeader(payload2Str(kw), url))
-    #response = r.json()
-    #if response.get(RETURN_CODE_STR) != SUCCESS_CODE_STR:
-    #    return None
-    #return util.json2obj(response)
+    r = requests.post(url, data = kw, headers = formatHeader(payload2Str(kw), url))
+    response = r.json()
+    if response.get(RETURN_CODE_STR) != SUCCESS_CODE_STR:
+       return None
+    return util.json2obj(response)
 
 
 

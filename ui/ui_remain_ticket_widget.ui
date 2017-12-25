@@ -14,12 +14,27 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>3</number>
+   </property>
+   <property name="leftMargin">
+    <number>3</number>
+   </property>
+   <property name="topMargin">
+    <number>3</number>
+   </property>
+   <property name="rightMargin">
+    <number>3</number>
+   </property>
+   <property name="bottomMargin">
+    <number>3</number>
+   </property>
    <item>
-    <widget class="QGroupBox" name="groupBox_4">
+    <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>余票:</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_4">
+     <layout class="QGridLayout" name="gridLayout">
       <property name="leftMargin">
        <number>3</number>
       </property>
@@ -32,7 +47,88 @@
       <property name="bottomMargin">
        <number>3</number>
       </property>
-      <item>
+      <item row="0" column="0">
+       <widget class="QTableWidget" name="tableTicketStatusIndicator">
+        <property name="maximumSize">
+         <size>
+          <width>300</width>
+          <height>33</height>
+         </size>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <attribute name="horizontalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="horizontalHeaderHighlightSections">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="verticalHeaderHighlightSections">
+         <bool>false</bool>
+        </attribute>
+        <row>
+         <property name="text">
+          <string>1</string>
+         </property>
+        </row>
+        <column>
+         <property name="text">
+          <string>1</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>2</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>3</string>
+         </property>
+        </column>
+        <item row="0" column="0">
+         <property name="text">
+          <string>有票</string>
+         </property>
+         <property name="textAlignment">
+          <set>AlignCenter</set>
+         </property>
+         <property name="flags">
+          <set>NoItemFlags</set>
+         </property>
+        </item>
+        <item row="0" column="1">
+         <property name="text">
+          <string>无票</string>
+         </property>
+         <property name="textAlignment">
+          <set>AlignCenter</set>
+         </property>
+         <property name="flags">
+          <set>NoItemFlags</set>
+         </property>
+        </item>
+        <item row="0" column="2">
+         <property name="text">
+          <string>已购</string>
+         </property>
+         <property name="textAlignment">
+          <set>AlignCenter</set>
+         </property>
+         <property name="flags">
+          <set>ItemIsSelectable</set>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0">
        <widget class="QCalendarWidget" name="calendarTicket">
         <property name="firstDayOfWeek">
          <enum>Qt::Monday</enum>
@@ -41,7 +137,7 @@
          <bool>true</bool>
         </property>
         <property name="selectionMode">
-         <enum>QCalendarWidget::NoSelection</enum>
+         <enum>QCalendarWidget::SingleSelection</enum>
         </property>
         <property name="horizontalHeaderFormat">
          <enum>QCalendarWidget::ShortDayNames</enum>
@@ -57,7 +153,7 @@
         </property>
        </widget>
       </item>
-      <item>
+      <item row="2" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
          <widget class="QCheckBox" name="checkAutoRefresh">
