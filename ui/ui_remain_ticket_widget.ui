@@ -60,7 +60,7 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
-         <widget class="QCheckBox" name="checkBox_2">
+         <widget class="QCheckBox" name="checkAutoRefresh">
           <property name="text">
            <string>自动刷新</string>
           </property>
@@ -74,9 +74,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="lineEdit_3">
+         <widget class="QLineEdit" name="textRefreshInterval">
           <property name="text">
-           <string/>
+           <string>10</string>
           </property>
          </widget>
         </item>

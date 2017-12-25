@@ -39,10 +39,7 @@ def funChangeData(d):
 
 
 def main():
-    a = RefData()
-    print("%s, %s", (a.a, a.b))
-    funChangeData(a)
-    print("%s, %s", (a.a, a.b))
+    print(list(range(10)))
 
 
 

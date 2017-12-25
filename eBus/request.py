@@ -135,5 +135,36 @@ def requireRemindTicket(customerId : str, customerName : str, keyCode : str, lin
     return util.json2obj(response)
 
 
+def requireBuyTicket(userId : str, userName : str, keyCode : str, lineId : str,
+                     vehTime : str, startTime : str, onStationId : str, offStationId : str,
+                     tradePrice : float, sztNo : str, saleDates : list):
+    if userId == "" or userName == "" or keyCode == "" or lineId == "" \
+        or vehTime == "" or startTime == "" or onStationId == "" or offStationId == "" \
+            or tradePrice == 0 or sztNo == "" or len(saleDates) == 0:
+        return None
+    url = "http://ewrite.szebus.net/order/phone/create"
+    saleDatesStr = '%2C'.join(saleDates)
+    kw = {'userId' : userId,
+          'userName' : userName,
+          KEY_CODE_STR : keyCode,
+          'saleDates' : saleDatesStr,
+          'lineId': lineId,
+          'vehTime' : vehTime,
+          'startTime' : startTime,
+          'onStationId' : onStationId,
+          'offStationId' : offStationId,
+          'tradePrice' : tradePrice,
+          'payType' : 3, # use SZ Bus car
+          'sztNo' : sztNo
+    }
+    print(formatHeader(payload2Str(kw), url))
+    #r = requests.post(url, data = kw, headers = formatHeader(payload2Str(kw), url))
+    #response = r.json()
+    #if response.get(RETURN_CODE_STR) != SUCCESS_CODE_STR:
+    #    return None
+    #return util.json2obj(response)
+
+
+
 if __name__ == "__main__":
     requireSearchBus("p177")

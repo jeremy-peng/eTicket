@@ -14,6 +14,12 @@ class BusInfo(object):
                "onStationId:{3}, offStationId:{4}, tradePrice:{5}"\
             .format(self.lineId, self.vehTime, self.startTime, self.onStationId, self.offStationId, self.tradePrice)
 
+    def isValid(self):
+        return self.lineId != "" and self.vehTime != "" and self.startTime != "" and self.onStationId != "" \
+                and self.offStationId != "" and self.tradePrice != 0
+
+
+
 
 if __name__ == '__main__':
     a = BusInfo()

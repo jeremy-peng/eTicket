@@ -3,6 +3,7 @@
 import json
 from builtins import isinstance
 from collections import namedtuple
+from PyQt5.QtWidgets import QApplication, QMainWindow
 
 from PyQt5.QtCore import QDate
 
@@ -54,6 +55,17 @@ def getStartEndDate(year : int, month : int):
     endDate = QDate(year, month, startDate.daysInMonth())
 
     return startDate, endDate
+
+
+def raiseTopMainWindow():
+    topWin = None
+    for win in QApplication.instance().topLevelWidgets():
+        if isinstance(win, QMainWindow):
+            topWin = win
+            break
+    if topWin is not None:
+        topWin.showNormal()
+        topWin.activateWindow()
 
 if __name__ == '__main__':
     data = """
