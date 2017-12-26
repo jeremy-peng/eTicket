@@ -96,7 +96,7 @@ class RemindTicketWidget(QWidget):
             if ticketPrice[i] == -2:
                 # already booked
                 textFormat = TicketStatus.BookedTicketText
-            else:
+            elif ticketPrice[i] != -1:
                 if remindTicket > 0:
                     textFormat = TicketStatus.HasTicketText
                 else:
@@ -105,7 +105,6 @@ class RemindTicketWidget(QWidget):
             startDate.setDate(startDate.year(), startDate.month(), startDate.day() + 1)
 
     def onCheckAutoRefresh(self, checked : bool):
-        logging.info("onCheckAutoRefresh")
         if checked:
             if self.autoRefreshTimer is None:
                 self.autoRefreshTimer = QTimer(self)
@@ -121,10 +120,11 @@ class RemindTicketWidget(QWidget):
         else:
             if not self.autoRefreshTimer is None and self.autoRefreshTimer.isActive():
                 self.autoRefreshTimer.stop()
+        self.ui.textRefreshInterval.setEnabled(not checked)
 
 
     def onAutoRefreshTimeout(self):
-        remindTickets = self.checkRemindTicket()
+        self.checkRemindTicket()
 
 
 

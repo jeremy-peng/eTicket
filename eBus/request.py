@@ -143,7 +143,7 @@ def requireBuyTicket(userId : str, userName : str, keyCode : str, lineId : str,
             or tradePrice == 0 or sztNo == "" or len(saleDates) == 0:
         return None
     url = "http://ewrite.szebus.net/order/phone/create"
-    saleDatesStr = '%2C'.join(saleDates)
+    saleDatesStr = ','.join(saleDates)
     kw = {'userId' : userId,
           'userName' : userName,
           KEY_CODE_STR : keyCode,

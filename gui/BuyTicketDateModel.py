@@ -14,8 +14,9 @@ class BuyTicketDateModel(object):
 
     def setDate(self, year : int, month : int):
         self._year, self._month = year, month
-        self.genAllDaySet()
         self.selectedDays.clear()
+        self.bookedDays.clear()
+        self.genAllDaySet()
 
     @property
     def year(self):
@@ -45,24 +46,29 @@ class BuyTicketDateModel(object):
                 self.selectedDays.remove(d)
                 break
 
-    def addBookedDate(self, date : QDate):
+    def addBookedDate(self, date : QDate, updateAllDay = True):
         if not self.hasBookedDate(date):
             self.bookedDays.append(date)
+            if updateAllDay:
+                self.genAllDaySet()
             if self.hasSelectedDate(date):
                 self.removeSelectedDate(date)
 
     def addBookedDateList(self, days : list):
         for date in days:
-            self.addBookedDate(date)
+            self.addBookedDate(date, False)
+        self.genAllDaySet()
 
 
     def setBookedDate(self, dateList : list):
         self.bookedDays = dateList[:]
+        self.genAllDaySet()
 
     def removeBookedDate(self, date : QDate):
         for i, d in enumerate(self.bookedDays):
             if d == date:
                 self.bookedDays.remove(d)
+                self.genAllDaySet()
                 break
 
     def genAllDaySet(self):
@@ -70,7 +76,9 @@ class BuyTicketDateModel(object):
         dayInMonth = curDate.daysInMonth()
         self.allDaySet.clear()
         for i in range(1, dayInMonth + 1):
-            self.allDaySet.append(QDate(self._year, self._month, i))
+            date = QDate(self._year, self._month, i)
+            if not self.hasBookedDate(date):
+                self.allDaySet.append(date)
 
 
     def selectAllDays(self):
@@ -112,6 +120,7 @@ class BuyTicketDateModel(object):
 
     def clearBookedDays(self):
         self.bookedDays.clear()
+        self.genAllDaySet()
 
     def hasBookedDate(self, date : QDate):
         return date in self.bookedDays

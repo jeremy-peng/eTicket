@@ -121,16 +121,13 @@ class SearchBusWidget(QWidget):
             QMessageBox.critical(self, "Error", "Please select bus line first.")
             return
         onStationIndex = self.ui.listOnStation.currentRow()
-        if onStationIndex < 0:
-            QMessageBox.critical(self, "Error", "Please select on station.")
-            return
         offStationIndex = self.ui.listOffStation.currentRow()
-        if offStationIndex < 0:
-            QMessageBox.critical(self, "Error", "Please select off station.")
-            return
         busInfo.lineId = self.curBusDetailObj.lineId
         busInfo.vehTime = self.curBusDetailObj.vehTime
-        busInfo.startTime = self.curBusDetailObj.onTimes.split(';')[onStationIndex]
+        if onStationIndex >= 0:
+            busInfo.startTime = self.curBusDetailObj.onTimes.split(';')[onStationIndex]
+            busInfo.onStationId = self.curBusDetailObj.onStationIds.split(';')[onStationIndex]
+
         busInfo.tradePrice = self.curBusDetailObj.tradePrice
-        busInfo.onStationId = self.curBusDetailObj.onStationIds.split(';')[onStationIndex]
-        busInfo.offStationId = self.curBusDetailObj.offStationIds.split(';')[offStationIndex]
+        if offStationIndex >= 0:
+            busInfo.offStationId = self.curBusDetailObj.offStationIds.split(';')[offStationIndex]

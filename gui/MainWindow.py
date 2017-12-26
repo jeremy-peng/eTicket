@@ -23,10 +23,12 @@ class MainWindow(QMainWindow):
 
     def initSignals(self):
         self.ui.searchBusWidget.selectedBus.connect(self.ui.remainTicketWidget.onSelectedBus)
+        self.ui.searchBusWidget.selectedBus.connect(self.ui.buyTicketWidget.onSelctedBusLineChanged)
         self.ui.buyTicketWidget.requireBusInfo.connect(self.ui.searchBusWidget.onRequireBusInfo)
         self.ui.remainTicketWidget.calendarPageChanged.connect(self.ui.buyTicketWidget.setCurrentPage)
         self.ui.remainTicketWidget.calendarClicked.connect(self.ui.buyTicketWidget.onClickCalendar)
         self.ui.buyTicketWidget.calendarPageChanged.connect(self.ui.remainTicketWidget.setCurrentPage)
+        self.ui.buyTicketWidget.ticketBooked.connect(self.ui.remainTicketWidget.checkRemindTicket)
 
     def initUI(self):
         self.setWindowIcon(QIcon(":/image/bus.jpg"))

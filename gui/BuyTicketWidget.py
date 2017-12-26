@@ -3,7 +3,7 @@
 
 from PyQt5.QtGui import QTextCharFormat
 from PyQt5.QtWidgets import QWidget, QMessageBox
-from PyQt5.QtCore import QDate, Qt, pyqtSignal
+from PyQt5.QtCore import QDate, Qt, pyqtSignal, QTimer
 
 from ui.ui_buy_ticket_widget import Ui_BuyTicketWidget
 from gui.BuyTicketDateModel import BuyTicketDateModel
@@ -19,6 +19,7 @@ class BuyTicketWidget(QWidget):
 
     requireBusInfo = pyqtSignal(BusInfo)
     calendarPageChanged = pyqtSignal(int, int)
+    ticketBooked = pyqtSignal()
 
 
     def __init__(self, parent = None):
@@ -26,6 +27,7 @@ class BuyTicketWidget(QWidget):
         self.ui = Ui_BuyTicketWidget()
         self.ui.setupUi(self)
         self.ticketDateModel = BuyTicketDateModel()
+        self.autoRefreshTimer = None
         self.initUI()
         self.initSignals()
 
@@ -41,6 +43,7 @@ class BuyTicketWidget(QWidget):
         self.ui.calendarWidget.currentPageChanged.connect(self.calendarPageChanged)
         self.ui.calendarWidget.clicked.connect(self.onClickCalendar)
         self.ui.textSZBusCard.editingFinished.connect(self.onTextSZTEditFinished)
+        self.ui.checkAutoRefresh.clicked.connect(self.onCheckAutoRefresh)
 
 
     def initUI(self):
@@ -87,12 +90,13 @@ class BuyTicketWidget(QWidget):
         busInfo = BusInfo()
         self.requireBusInfo.emit(busInfo)
         logging.info("Bus info: %s" % str(busInfo))
-        if not busInfo.isValid():
+        if busInfo.lineId == "" or busInfo.vehTime == "":
             return
         remindTicketNum, ticketPriceList = TicketHelper.getRemindTicketInfo(busInfo.lineId, busInfo.vehTime,
                                                                             year, month)
         if ticketPriceList is None or len(ticketPriceList) == 0 :
             return
+        self.ticketDateModel.clearBookedDays()
         startDate = QDate(year, month, 1)
         bookedDays = [QDate(year, month, i + 1) for i in range(startDate.daysInMonth()) if ticketPriceList[i] == -2 ]
         self.ticketDateModel.setBookedDate(bookedDays)
@@ -111,29 +115,31 @@ class BuyTicketWidget(QWidget):
         self.ui.listSelectedDays.addItems(selectedDayStrList)
 
     def onClickCalendar(self, date : QDate):
+        if self.ticketDateModel.hasBookedDate(date):
+            return
         if self.ticketDateModel.hasSelectedDate(date):
             self.ticketDateModel.removeSelectedDate(date)
         else:
             self.ticketDateModel.addSelectedDate(date)
         self.updateTicketStatus(self.ticketDateModel.getSelectedDays(), self.ticketDateModel.getBookedDays())
 
-    def onBuyTicket(self):
+    def buyTicket(self):
         logging.info("Start buy ticket")
-        self.ui.listBuyDays.clear()
         busInfo = BusInfo()
         self.requireBusInfo.emit(busInfo)
         logging.info("Bus info: %s" % str(busInfo))
         if not busInfo.isValid():
-            QMessageBox.critical(self, "Error", "Bus info isn't valid")
-            return
+            QMessageBox.critical(self, "Error", "Bus info isn't valid.\n %s" % str(busInfo))
+            return False
         selectedDays = self.ticketDateModel.getSelectedDays()
         if len(selectedDays) == 0:
             QMessageBox.critical(self, 'Error', 'Please select date first.')
+            return False
 
         remindTicketNum, ticketPriceList = TicketHelper.getRemindTicketInfo(busInfo.lineId, busInfo.vehTime,
                                                                             self.ticketDateModel.year, self.ticketDateModel.month)
         if remindTicketNum is None or len(remindTicketNum) == 0 :
-            return
+            return False
         buyTicketDays = []
         startDate = QDate(self.ticketDateModel.year, self.ticketDateModel.month, 1)
         allDateHasTicket = [QDate(self.ticketDateModel.year, self.ticketDateModel.month, i + 1) for i in range(startDate.daysInMonth())
@@ -144,7 +150,8 @@ class BuyTicketWidget(QWidget):
                 buyTicketDays.append(buyDay)
 
         if len(buyTicketDays) == 0:
-            return
+            logging.info("No ticket is avaiable ")
+            return True
 
         buyTicketDayStrList = []
         for buyDay in buyTicketDays:
@@ -159,10 +166,64 @@ class BuyTicketWidget(QWidget):
                                  userData.sztNum, buyTicketDayStrList)
         if buyTicketResponseObj is None:
             QMessageBox.critical(self, "Error", 'fail to buy ticket')
-            return
+            return False
 
+        self.ticketDateModel.addBookedDateList(buyTicketDays)
+        self.updateTicketStatus(self.ticketDateModel.getSelectedDays(), self.ticketDateModel.getBookedDays())
+
+        self.ticketBooked.emit()
+
+        return True
+
+    def onBuyTicket(self):
+        self.buyTicket()
 
 
 
     def onTextSZTEditFinished(self):
         userData.sztNum = self.ui.textSZBusCard.text()
+
+
+    def onAutoRefreshTimeout(self):
+        if not self.buyTicket():
+            self.stopAutoRefreshTimer()
+        else:
+            if len(self.ticketDateModel.getSelectedDays()) == 0:
+                QMessageBox.information(self, "Info", "All ticket buy successfully")
+                self.stopAutoRefreshTimer()
+
+    def onCheckAutoRefresh(self, checked : bool):
+        logging.info("onCheckAutoRefresh")
+        if checked:
+            if self.autoRefreshTimer is None:
+                self.autoRefreshTimer = QTimer(self)
+                self.autoRefreshTimer.timeout.connect(self.onAutoRefreshTimeout)
+            timeIntervalSt = self.ui.textRefreshInterval.text()
+            if timeIntervalSt == "":
+                QMessageBox.critical(self, "Error",'Please input time interval')
+                self.ui.checkAutoRefresh.setChecked(False)
+                return
+            timeInterval = float(timeIntervalSt) * 1000
+            self.autoRefreshTimer.setInterval(timeInterval)
+            self.autoRefreshTimer.start(timeInterval)
+        else:
+            self.stopAutoRefreshTimer()
+        self.enableBuyWidgets(not checked)
+
+
+    def enableBuyWidgets(self, enable : bool):
+        self.ui.textRefreshInterval.setEnabled(enable)
+        self.ui.textSZBusCard.setEnabled(enable)
+        self.ui.calendarWidget.setEnabled(enable)
+        self.ui.groupSelectBtns.setEnabled(enable)
+
+    def stopAutoRefreshTimer(self):
+        self.ui.checkAutoRefresh.setChecked(False)
+        self.enableBuyWidgets(True)
+        if not self.autoRefreshTimer is None and self.autoRefreshTimer.isActive():
+            self.autoRefreshTimer.stop()
+
+    def onSelctedBusLineChanged(self):
+        self.ticketDateModel.clearSelectedDays()
+        self.updateBookedTicketDays(self.ticketDateModel.year, self.ticketDateModel.month)
+        self.updateTicketStatus(self.ticketDateModel.getSelectedDays(), self.ticketDateModel.getBookedDays())

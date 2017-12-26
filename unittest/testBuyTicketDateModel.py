@@ -36,7 +36,8 @@ class TestBusTicketDateModel(unittest.TestCase):
         self.assertEqual(len(model.getBookedDays()), 3)
         self.assertTrue(model.hasBookedDate(QDate(2017, 12, 5)))
         self.assertTrue(model.hasBookedDate(QDate(2017, 12, 6)))
-        self.assertFalse(model.hasBookedDate(QDate(2017, 12, 7)))
+        self.assertTrue(model.hasBookedDate(QDate(2017, 12, 7)))
+        self.assertFalse(model.hasBookedDate(QDate(2017, 12, 8)))
         model.addBookedDate(QDate(2017, 12, 5))
         self.assertEqual(len(model.getBookedDays()), 3)
 
