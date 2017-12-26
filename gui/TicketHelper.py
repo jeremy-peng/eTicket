@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-from PyQt5.QtCore import QDate
+from PyQt5.QtCore import QDate, Qt
+from PyQt5.QtGui import QTextCharFormat
 
 from config import userData
 from eBus import request
@@ -19,7 +20,7 @@ def _getRemindTicketTicketObj(lineId : str, vehTime: str, year : int, month : in
         return None
     return remindTicketObj
 
-def getRemindTicketNumber(lineId : str, vehTime: str, year : int, month : int, day = 1):
+def getRemindTicketInfo(lineId : str, vehTime: str, year : int, month : int, day = 1):
     remindTicketObj = _getRemindTicketTicketObj(lineId, vehTime, year, month, day)
     if remindTicketObj is None:
         return (None, None)
@@ -29,6 +30,23 @@ def getRemindTicketNumber(lineId : str, vehTime: str, year : int, month : int, d
     ticketPriceList = list(map(float, ticketPriceStrList))
     return remindTicketNumList, ticketPriceList
 
+
+class TicketStatus(object):
+    HasTicketText = QTextCharFormat()
+    HasTicketText.setForeground(Qt.black)
+    HasTicketText.setBackground(Qt.green)
+
+    NoneTicketText = QTextCharFormat()
+    NoneTicketText.setForeground(Qt.white)
+    NoneTicketText.setBackground(Qt.red)
+
+    BookedTicketText = QTextCharFormat()
+    BookedTicketText.setForeground(Qt.yellow)
+    BookedTicketText.setBackground(Qt.blue)
+
+    SelectedTicketText = QTextCharFormat()
+    SelectedTicketText.setForeground(Qt.black)
+    SelectedTicketText.setBackground(Qt.green)
 
 
 if __name__ == '__main__':

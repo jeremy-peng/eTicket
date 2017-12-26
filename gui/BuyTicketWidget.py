@@ -9,14 +9,14 @@ from ui.ui_buy_ticket_widget import Ui_BuyTicketWidget
 from gui.BuyTicketDateModel import BuyTicketDateModel
 import logging
 from gui.BusInfo import BusInfo
+from gui.TicketHelper import TicketStatus
 from config import userData
 from gui import TicketHelper
 from eBus import request
 
 class BuyTicketWidget(QWidget):
-    BuyTicketText = QTextCharFormat()
-    BuyTicketText.setForeground(Qt.black)
-    BuyTicketText.setBackground(Qt.green)
+
+
     requireBusInfo = pyqtSignal(BusInfo)
     calendarPageChanged = pyqtSignal(int, int)
 
@@ -25,7 +25,7 @@ class BuyTicketWidget(QWidget):
         super(BuyTicketWidget, self).__init__(parent)
         self.ui = Ui_BuyTicketWidget()
         self.ui.setupUi(self)
-        self.ticketDayModel = BuyTicketDateModel()
+        self.ticketDateModel = BuyTicketDateModel()
         self.initUI()
         self.initSignals()
 
@@ -46,58 +46,76 @@ class BuyTicketWidget(QWidget):
     def initUI(self):
         curDate = QDate.currentDate()
         self.ui.calendarWidget.setSelectedDate(curDate)
-        self.ticketDayModel.setDate(curDate.year(), curDate.month())
+        self.ticketDateModel.setDate(curDate.year(), curDate.month())
         self.ui.textSZBusCard.setText(userData.sztNum)
 
 
     def onSelectedAllDays(self):
         logging.info("select all days")
-        self.ticketDayModel.selectAllDays()
-        self.updateBuyTicketDays(self.ticketDayModel.getSeletedDays())
+        self.ticketDateModel.selectAllDays()
+        self.updateTicketStatus(self.ticketDateModel.getSelectedDays(), self.ticketDateModel.getBookedDays())
 
     def onInvertSelectedDays(self):
         logging.info("invert all days")
-        self.ticketDayModel.invertSelectDay()
-        self.updateBuyTicketDays(self.ticketDayModel.getSeletedDays())
+        self.ticketDateModel.invertSelectDay()
+        self.updateTicketStatus(self.ticketDateModel.getSelectedDays(), self.ticketDateModel.getBookedDays())
 
     def onSelectedAllWorkDays(self):
         logging.info("select all work days")
-        self.ticketDayModel.selectAllWorkDays()
-        self.updateBuyTicketDays(self.ticketDayModel.getSeletedDays())
+        self.ticketDateModel.selectAllWorkDays()
+        self.updateTicketStatus(self.ticketDateModel.getSelectedDays(), self.ticketDateModel.getBookedDays())
 
     def onSelectedAllWeekDays(self):
         logging.info("invert all week days")
-        self.ticketDayModel.selectAllWeekDays()
-        self.updateBuyTicketDays(self.ticketDayModel.getSeletedDays())
+        self.ticketDateModel.selectAllWeekDays()
+        self.updateTicketStatus(self.ticketDateModel.getSelectedDays(), self.ticketDateModel.getBookedDays())
 
     def onClearAllDays(self):
         logging.info("clear all selected")
-        self.ticketDayModel.clearSelectedDays()
-        self.updateBuyTicketDays(self.ticketDayModel.getSeletedDays())
+        self.ticketDateModel.clearSelectedDays()
+        self.updateTicketStatus(self.ticketDateModel.getSelectedDays(), self.ticketDateModel.getBookedDays())
 
     def setCurrentPage(self, year : int, month : int):
         self.ui.calendarWidget.setCurrentPage(year, month)
 
     def onCurrentPageChanged(self, year, month):
-        self.ticketDayModel.setDate(year, month)
-        self.updateBuyTicketDays(self.ticketDayModel.getSeletedDays())
+        self.ticketDateModel.setDate(year, month)
+        self.updateBookedTicketDays(year, month)
+        self.updateTicketStatus(self.ticketDateModel.getSelectedDays(), self.ticketDateModel.getBookedDays())
+
+    def updateBookedTicketDays(self, year, month):
+        busInfo = BusInfo()
+        self.requireBusInfo.emit(busInfo)
+        logging.info("Bus info: %s" % str(busInfo))
+        if not busInfo.isValid():
+            return
+        remindTicketNum, ticketPriceList = TicketHelper.getRemindTicketInfo(busInfo.lineId, busInfo.vehTime,
+                                                                            year, month)
+        if ticketPriceList is None or len(ticketPriceList) == 0 :
+            return
+        startDate = QDate(year, month, 1)
+        bookedDays = [QDate(year, month, i + 1) for i in range(startDate.daysInMonth()) if ticketPriceList[i] == -2 ]
+        self.ticketDateModel.setBookedDate(bookedDays)
 
 
-    def updateBuyTicketDays(self, buyDays : list):
+    def updateTicketStatus(self, selectedDays : list, bookedDays : list):
         self.ui.calendarWidget.setDateTextFormat(QDate(), QTextCharFormat())
         self.ui.listSelectedDays.clear()
         selectedDayStrList = []
-        for date in buyDays:
-            self.ui.calendarWidget.setDateTextFormat(date, BuyTicketWidget.BuyTicketText)
+        for date in bookedDays:
+            self.ui.calendarWidget.setDateTextFormat(date, TicketStatus.BookedTicketText)
+        for date in selectedDays:
+            self.ui.calendarWidget.setDateTextFormat(date, TicketStatus.SelectedTicketText)
             selectedDayStrList.append(date.toString("yyyyMMdd"))
+
         self.ui.listSelectedDays.addItems(selectedDayStrList)
 
     def onClickCalendar(self, date : QDate):
-        if self.ticketDayModel.hasDate(date):
-            self.ticketDayModel.removeDate(date)
+        if self.ticketDateModel.hasSelectedDate(date):
+            self.ticketDateModel.removeSelectedDate(date)
         else:
-            self.ticketDayModel.addDate(date)
-        self.updateBuyTicketDays(self.ticketDayModel.getSeletedDays())
+            self.ticketDateModel.addSelectedDate(date)
+        self.updateTicketStatus(self.ticketDateModel.getSelectedDays(), self.ticketDateModel.getBookedDays())
 
     def onBuyTicket(self):
         logging.info("Start buy ticket")
@@ -108,18 +126,18 @@ class BuyTicketWidget(QWidget):
         if not busInfo.isValid():
             QMessageBox.critical(self, "Error", "Bus info isn't valid")
             return
-        selectedDays = self.ticketDayModel.getSeletedDays()
+        selectedDays = self.ticketDateModel.getSelectedDays()
         if len(selectedDays) == 0:
             QMessageBox.critical(self, 'Error', 'Please select date first.')
 
-        remindTicketNum, ticketPriceList = TicketHelper.getRemindTicketNumber(busInfo.lineId, busInfo.vehTime,
-                                                             self.ticketDayModel.year, self.ticketDayModel.month)
+        remindTicketNum, ticketPriceList = TicketHelper.getRemindTicketInfo(busInfo.lineId, busInfo.vehTime,
+                                                                            self.ticketDateModel.year, self.ticketDateModel.month)
         if remindTicketNum is None or len(remindTicketNum) == 0 :
             return
         buyTicketDays = []
-        startDate = QDate(self.ticketDayModel.year, self.ticketDayModel.month, 1)
-        allDateHasTicket = [QDate(self.ticketDayModel.year, self.ticketDayModel.month, i + 1) for i in range(startDate.daysInMonth())
-                            if remindTicketNum[i] > 0 ]
+        startDate = QDate(self.ticketDateModel.year, self.ticketDateModel.month, 1)
+        allDateHasTicket = [QDate(self.ticketDateModel.year, self.ticketDateModel.month, i + 1) for i in range(startDate.daysInMonth())
+                            if remindTicketNum[i] > 0]
         logging.info('all days has ticket' + str(allDateHasTicket))
         for buyDay in selectedDays:
             if buyDay in allDateHasTicket:
@@ -135,11 +153,11 @@ class BuyTicketWidget(QWidget):
         logging.info('select days has ticket' + str(buyTicketDayStrList))
 
         totalPrice = busInfo.tradePrice * len(buyTicketDayStrList)
-        buyTicketResponObj = request.requireBuyTicket(userData.customerId, userData.loginName, userData.keyCode,
+        buyTicketResponseObj = request.requireBuyTicket(userData.customerId, userData.loginName, userData.keyCode,
                                  busInfo.lineId, busInfo.vehTime, busInfo.startTime,
                                  busInfo.onStationId, busInfo.offStationId, totalPrice,
                                  userData.sztNum, buyTicketDayStrList)
-        if buyTicketResponObj is None:
+        if buyTicketResponseObj is None:
             QMessageBox.critical(self, "Error", 'fail to buy ticket')
             return
 

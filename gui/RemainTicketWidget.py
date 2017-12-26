@@ -5,6 +5,7 @@ from PyQt5.QtCore import QDate, Qt, QTimer, pyqtSignal
 from PyQt5.QtWidgets import QWidget, QMessageBox
 from PyQt5.QtGui import QTextCharFormat
 from gui import TicketHelper
+from gui.TicketHelper import TicketStatus
 
 
 from ui.ui_remain_ticket_widget import Ui_remainTicketWidget
@@ -14,17 +15,7 @@ from eBus import request
 
 
 class RemindTicketWidget(QWidget):
-    hasTicketText = QTextCharFormat()
-    hasTicketText.setForeground(Qt.black)
-    hasTicketText.setBackground(Qt.green)
 
-    noneTicketText = QTextCharFormat()
-    noneTicketText.setForeground(Qt.white)
-    noneTicketText.setBackground(Qt.red)
-
-    bookedTicketText = QTextCharFormat()
-    bookedTicketText.setForeground(Qt.yellow)
-    bookedTicketText.setBackground(Qt.blue)
 
     calendarPageChanged = pyqtSignal(int, int)
     calendarClicked = pyqtSignal(QDate)
@@ -61,16 +52,16 @@ class RemindTicketWidget(QWidget):
         self.ui.calendarTicket.showToday()
         hasTicketItem = self.ui.tableTicketStatusIndicator.item(0, 0)
         hasTicketItem.setText('有票')
-        hasTicketItem.setBackground(RemindTicketWidget.hasTicketText.background())
-        hasTicketItem.setForeground(RemindTicketWidget.hasTicketText.foreground())
+        hasTicketItem.setBackground(TicketStatus.HasTicketText.background())
+        hasTicketItem.setForeground(TicketStatus.HasTicketText.foreground())
         noneTicketItem = self.ui.tableTicketStatusIndicator.item(0, 1)
         noneTicketItem.setText('无票')
-        noneTicketItem.setBackground(RemindTicketWidget.noneTicketText.background())
-        noneTicketItem.setForeground(RemindTicketWidget.noneTicketText.foreground())
+        noneTicketItem.setBackground(TicketStatus.NoneTicketText.background())
+        noneTicketItem.setForeground(TicketStatus.NoneTicketText.foreground())
         bookTicketItem = self.ui.tableTicketStatusIndicator.item(0, 2)
         bookTicketItem.setText('已购')
-        bookTicketItem.setBackground(RemindTicketWidget.bookedTicketText.background())
-        bookTicketItem.setForeground(RemindTicketWidget.bookedTicketText.foreground())
+        bookTicketItem.setBackground(TicketStatus.BookedTicketText.background())
+        bookTicketItem.setForeground(TicketStatus.BookedTicketText.foreground())
 
     def setCurrentPage(self, year : int, month : int):
         self.ui.calendarTicket.setCurrentPage(year, month)
@@ -85,8 +76,8 @@ class RemindTicketWidget(QWidget):
 
     def checkRemindTicket(self):
         startDate = QDate(self.curDate.year(), self.curDate.month(), 1)
-        remindTicketNumber, ticketPriceList = TicketHelper.getRemindTicketNumber(self.lineId,
-                                                                self.busStartTime, self.curDate.year(), self.curDate.month())
+        remindTicketNumber, ticketPriceList = TicketHelper.getRemindTicketInfo(self.lineId,
+                                                                               self.busStartTime, self.curDate.year(), self.curDate.month())
         if remindTicketNumber is None:
             return
         logging.info("Check remind ticket lists:" + str(remindTicketNumber))
@@ -104,12 +95,12 @@ class RemindTicketWidget(QWidget):
             textFormat = QTextCharFormat()
             if ticketPrice[i] == -2:
                 # already booked
-                textFormat = RemindTicketWidget.bookedTicketText
+                textFormat = TicketStatus.BookedTicketText
             else:
                 if remindTicket > 0:
-                    textFormat = RemindTicketWidget.hasTicketText
+                    textFormat = TicketStatus.HasTicketText
                 else:
-                    textFormat = RemindTicketWidget.noneTicketText
+                    textFormat = TicketStatus.NoneTicketText
             self.ui.calendarTicket.setDateTextFormat(startDate, textFormat)
             startDate.setDate(startDate.year(), startDate.month(), startDate.day() + 1)
 

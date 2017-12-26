@@ -8,6 +8,7 @@ class BuyTicketDateModel(object):
     def __init__(self):
         self.selectedDays = list()
         self.allDaySet = list()
+        self.bookedDays = list()
         self._year = QDate.currentDate().year()
         self._month = QDate.currentDate().month()
 
@@ -34,13 +35,34 @@ class BuyTicketDateModel(object):
         self._month = month
         self.genAllDaySet()
 
-    def addDate(self, date : QDate):
-        self.selectedDays.append(date)
+    def addSelectedDate(self, date : QDate):
+        if date not in self.bookedDays:
+            self.selectedDays.append(date)
 
-    def removeDate(self, date : QDate):
+    def removeSelectedDate(self, date : QDate):
         for i, d in enumerate(self.selectedDays):
             if d == date:
                 self.selectedDays.remove(d)
+                break
+
+    def addBookedDate(self, date : QDate):
+        if not self.hasBookedDate(date):
+            self.bookedDays.append(date)
+            if self.hasSelectedDate(date):
+                self.removeSelectedDate(date)
+
+    def addBookedDateList(self, days : list):
+        for date in days:
+            self.addBookedDate(date)
+
+
+    def setBookedDate(self, dateList : list):
+        self.bookedDays = dateList[:]
+
+    def removeBookedDate(self, date : QDate):
+        for i, d in enumerate(self.bookedDays):
+            if d == date:
+                self.bookedDays.remove(d)
                 break
 
     def genAllDaySet(self):
@@ -76,11 +98,20 @@ class BuyTicketDateModel(object):
             if date.dayOfWeek() != 6 and date.dayOfWeek() != 7:
                 self.selectedDays.append(date)
 
-    def getSeletedDays(self):
+    def getSelectedDays(self):
         return self.selectedDays
 
     def clearSelectedDays(self):
         self.selectedDays.clear()
 
-    def hasDate(self, date : QDate):
+    def hasSelectedDate(self, date : QDate):
         return date in self.selectedDays
+
+    def getBookedDays(self):
+        return self.bookedDays
+
+    def clearBookedDays(self):
+        self.bookedDays.clear()
+
+    def hasBookedDate(self, date : QDate):
+        return date in self.bookedDays
