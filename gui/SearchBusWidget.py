@@ -123,6 +123,7 @@ class SearchBusWidget(QWidget):
         onStationIndex = self.ui.listOnStation.currentRow()
         offStationIndex = self.ui.listOffStation.currentRow()
         busInfo.lineId = self.curBusDetailObj.lineId
+        busInfo.lineNo = self.curBusDetailObj.lineNo
         busInfo.vehTime = self.curBusDetailObj.vehTime
         if onStationIndex >= 0:
             busInfo.startTime = self.curBusDetailObj.onTimes.split(';')[onStationIndex]

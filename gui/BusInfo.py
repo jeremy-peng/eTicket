@@ -8,15 +8,17 @@ class BusInfo(object):
         self.onStationId = ""
         self.offStationId = ""
         self.tradePrice = 0
+        self.lineNo = ""
 
     def __str__(self):
-        return "lineId:{0}, vehTime:{1}, startTime:{2}, " \
+        return "lineNo:{6}, lineId:{0}, vehTime:{1}, startTime:{2}, " \
                "onStationId:{3}, offStationId:{4}, tradePrice:{5}"\
-            .format(self.lineId, self.vehTime, self.startTime, self.onStationId, self.offStationId, self.tradePrice)
+            .format(self.lineId, self.vehTime, self.startTime, self.onStationId, self.offStationId, self.tradePrice,
+                    self.lineNo)
 
     def isValid(self):
         return self.lineId != "" and self.vehTime != "" and self.startTime != "" and self.onStationId != "" \
-                and self.offStationId != "" and self.tradePrice != 0
+                and self.offStationId != "" and self.tradePrice != 0 and self.lineNo != ""
 
 
 

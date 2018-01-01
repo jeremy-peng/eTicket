@@ -13,6 +13,7 @@ from gui.TicketHelper import TicketStatus
 from config import userData
 from gui import TicketHelper
 from eBus import request
+import itchat
 
 class BuyTicketWidget(QWidget):
 
@@ -30,6 +31,7 @@ class BuyTicketWidget(QWidget):
         self.autoRefreshTimer = None
         self.initUI()
         self.initSignals()
+        itchat.login()
 
 
     def initSignals(self):
@@ -172,6 +174,9 @@ class BuyTicketWidget(QWidget):
         self.updateTicketStatus(self.ticketDateModel.getSelectedDays(), self.ticketDateModel.getBookedDays())
 
         self.ticketBooked.emit()
+
+        weChartStr = 'buy line:{0}, date: {1}'.format(busInfo.lineNo, ','.join(buyTicketDayStrList))
+        itchat.send(weChartStr, 'filehelper')
 
         return True
 
