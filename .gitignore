@@ -5,3 +5,5 @@ ui/__pycache__
 doc/~$*.docx
 doc/~*.*
 *.pkl
+settings.ini
+

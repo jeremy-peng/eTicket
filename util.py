@@ -30,7 +30,7 @@ def combineList(l1 : list, l2 : list, connector : str):
         ret.append(value + connector + l2[i])
     return ret
 
-def _formatTime(timeStr : str):
+def formatTime(timeStr : str):
     timeStr = timeStr[:2] + ":" + timeStr[2:]
     return timeStr
 
@@ -39,7 +39,7 @@ def getFormatTime(timeList : list):
     :param timeList: ['1122','3344']
     :return: ['11:22', '33:44']
     """
-    return list(map(_formatTime, timeList))
+    return list(map(formatTime, timeList))
 
 
 def getStartEndDateStr(year : int, month : int):

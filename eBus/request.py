@@ -198,8 +198,26 @@ def requireOrderDetail(id : str, userName : str, userId : str, keyCode : str):
     response = r.json()
     if response.get(RETURN_CODE_STR) != SUCCESS_CODE_STR:
         return None
-    print(response)
     return util.json2obj(response)
+
+def requireCancelOrder(id : str, userName : str, userId : str, keyCode : str, saleDates : list):
+    if id == "" or userName == "" or userId == "" or keyCode == "":
+        return None
+    url = "http://ewrite.szebus.net/order/phone/cancel"
+    saleDatesStr = ""
+    if len(saleDates) != 0:
+        saleDatesStr = ','.join(saleDates)
+    kw = {'id': id,
+          'userName': userName,
+          'userId': userId,
+          KEY_CODE_STR: keyCode,
+          'saleDates': saleDatesStr }
+    r = requests.post(url, data=kw, headers=formatHeader(payload2Str(kw), url))
+    response = r.json()
+    if response.get(RETURN_CODE_STR) != SUCCESS_CODE_STR:
+        return None
+    return util.json2obj(response)
+
 
 if __name__ == "__main__":
     requireSearchBus("p177")

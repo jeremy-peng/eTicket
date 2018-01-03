@@ -41,10 +41,7 @@ def funChangeData(d):
 
 
 def main():
-    request.requireOrderDetail('6644567', userData.loginName, userData.customerId, userData.keyCode)
-
-    request.requireOrderDetail('6775733', userData.loginName, userData.customerId, userData.keyCode)
-    request.requireOrderDetail('6664975', userData.loginName, userData.customerId, userData.keyCode)
+    print(','.join(["dd"]))
 
 
 if __name__ == "__main__":
