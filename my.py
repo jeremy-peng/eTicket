@@ -6,6 +6,8 @@ from PyQt5.QtCore import QDate
 
 from gui import  Application
 import  logging
+from config import userData
+from eBus import request
 
 
 def combindList(l1 : list, l2 : list, connector : str):
@@ -39,8 +41,10 @@ def funChangeData(d):
 
 
 def main():
-    print(list(range(10)))
+    request.requireOrderDetail('6644567', userData.loginName, userData.customerId, userData.keyCode)
 
+    request.requireOrderDetail('6775733', userData.loginName, userData.customerId, userData.keyCode)
+    request.requireOrderDetail('6664975', userData.loginName, userData.customerId, userData.keyCode)
 
 
 if __name__ == "__main__":

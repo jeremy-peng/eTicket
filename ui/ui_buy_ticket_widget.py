@@ -87,6 +87,9 @@ class Ui_BuyTicketWidget(object):
         self.textRefreshInterval.setMaximumSize(QtCore.QSize(100, 16777215))
         self.textRefreshInterval.setObjectName("textRefreshInterval")
         self.horizontalLayout_3.addWidget(self.textRefreshInterval)
+        self.checkWeChatNotify = QtWidgets.QCheckBox(self.groupBox_5)
+        self.checkWeChatNotify.setObjectName("checkWeChatNotify")
+        self.horizontalLayout_3.addWidget(self.checkWeChatNotify)
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem2)
         self.verticalLayout_3.addLayout(self.horizontalLayout_3)
@@ -110,4 +113,5 @@ class Ui_BuyTicketWidget(object):
         self.checkAutoRefresh.setText(_translate("BuyTicketWidget", "自动刷票"))
         self.label_3.setText(_translate("BuyTicketWidget", "间隔(s):"))
         self.textRefreshInterval.setText(_translate("BuyTicketWidget", "10"))
+        self.checkWeChatNotify.setText(_translate("BuyTicketWidget", "微信通知"))
 

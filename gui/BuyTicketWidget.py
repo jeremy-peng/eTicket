@@ -31,7 +31,8 @@ class BuyTicketWidget(QWidget):
         self.autoRefreshTimer = None
         self.initUI()
         self.initSignals()
-        itchat.login()
+        self.isEnableWeChatNotify = False
+        self.itChat = None
 
 
     def initSignals(self):
@@ -46,6 +47,7 @@ class BuyTicketWidget(QWidget):
         self.ui.calendarWidget.clicked.connect(self.onClickCalendar)
         self.ui.textSZBusCard.editingFinished.connect(self.onTextSZTEditFinished)
         self.ui.checkAutoRefresh.clicked.connect(self.onCheckAutoRefresh)
+        self.ui.checkWeChatNotify.clicked.connect(self.onCheckedWeChatNotify)
 
 
     def initUI(self):
@@ -175,8 +177,9 @@ class BuyTicketWidget(QWidget):
 
         self.ticketBooked.emit()
 
-        weChartStr = 'buy line:{0}, date: {1}'.format(busInfo.lineNo, ','.join(buyTicketDayStrList))
-        itchat.send(weChartStr, 'filehelper')
+        if self.isEnableWeChatNotify and self.itChat is not None:
+            weChartStr = 'buy line:{0}, date: {1}'.format(busInfo.lineNo, ','.join(buyTicketDayStrList))
+            itchat.send(weChartStr, 'filehelper')
 
         return True
 
@@ -232,3 +235,12 @@ class BuyTicketWidget(QWidget):
         self.ticketDateModel.clearSelectedDays()
         self.updateBookedTicketDays(self.ticketDateModel.year, self.ticketDateModel.month)
         self.updateTicketStatus(self.ticketDateModel.getSelectedDays(), self.ticketDateModel.getBookedDays())
+
+    def onCheckedWeChatNotify(self, checked : bool):
+        self.isEnableWeChatNotify = checked
+        if checked:
+            if self.itChat is None:
+                itchat.auto_login(hotReload=True)
+                self.itChat = itchat
+
+

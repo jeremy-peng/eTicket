@@ -6,6 +6,8 @@ from PyQt5.QtWidgets import QMainWindow
 from ui.ui_mainwindow import Ui_MainWindow
 import  logging
 import ui.eTicket
+from eBus import request
+from config import userData
 
 
 class MainWindow(QMainWindow):
@@ -29,9 +31,24 @@ class MainWindow(QMainWindow):
         self.ui.remainTicketWidget.calendarClicked.connect(self.ui.buyTicketWidget.onClickCalendar)
         self.ui.buyTicketWidget.calendarPageChanged.connect(self.ui.remainTicketWidget.setCurrentPage)
         self.ui.buyTicketWidget.ticketBooked.connect(self.ui.remainTicketWidget.checkRemindTicket)
+        self.ui.btnRefreshOrders.clicked.connect(self.onRefreshOrder)
 
     def initUI(self):
         self.setWindowIcon(QIcon(":/image/bus.jpg"))
+        self.ui.completeOrderWidget.setOperationWidgetsShown(False)
 
+    def onRefreshOrder(self):
+        # check imcomplete order
+        imcompleteOrderReturnObj = request.requireCheckAllOrder(userData.loginName, userData.customerId, userData.keyCode, 1)
+        if imcompleteOrderReturnObj is None:
+            return
+        self.ui.imcompleteOrderWidget.setOrderList(imcompleteOrderReturnObj.returnData)
+        self.ui.imcompleteOrderWidget.resizeColumnsToContents()
+
+        completeRrderReturnObj = request.requireCheckAllOrder(userData.loginName, userData.customerId, userData.keyCode, 2)
+        if completeRrderReturnObj is None:
+            return
+        self.ui.completeOrderWidget.setOrderList(completeRrderReturnObj.returnData)
+        self.ui.completeOrderWidget.resizeColumnsToContents()
 
 

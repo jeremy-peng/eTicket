@@ -163,7 +163,43 @@ def requireBuyTicket(userId : str, userName : str, keyCode : str, lineId : str,
        return None
     return util.json2obj(response)
 
+def requireCheckAllOrder(userName : str, userId : str, keyCode : str, payStatus = 1):
+    '''
+    :param userName:
+    :param userId:
+    :param keyCode:
+    :param payStatus: 0 : all order, 1: completed orders, 2: imcompleted orders
+    :return:
+    '''
+    if userName == "" or userId == "" or keyCode == "":
+        return None
+    url = "http://eread.szebus.net/order/phone/main/data"
+    kw = {'userName' : userName,
+          'userId' : userId,
+          KEY_CODE_STR : keyCode,
+          'pageNo' : 1,
+          'pageSize' : 1000,
+          'payStatus' : payStatus}
+    r = requests.post(url, data = kw, headers = formatHeader(payload2Str(kw), url))
+    response = r.json()
+    if response.get(RETURN_CODE_STR) != SUCCESS_CODE_STR:
+        return None
+    return util.json2obj(response)
 
+def requireOrderDetail(id : str, userName : str, userId : str, keyCode : str):
+    if id == "" or userName == "" or userId == "" or keyCode == "":
+        return None
+    url = "http://eread.szebus.net/order/phone/main/second/detail"
+    kw = {'id':  id,
+        'userName' : userName,
+          'userId' : userId,
+          KEY_CODE_STR : keyCode}
+    r = requests.post(url, data = kw, headers = formatHeader(payload2Str(kw), url))
+    response = r.json()
+    if response.get(RETURN_CODE_STR) != SUCCESS_CODE_STR:
+        return None
+    print(response)
+    return util.json2obj(response)
 
 if __name__ == "__main__":
     requireSearchBus("p177")

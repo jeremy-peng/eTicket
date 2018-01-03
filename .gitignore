@@ -4,3 +4,4 @@ ui/__pycache__
 .idea/
 doc/~$*.docx
 doc/~*.*
+*.pkl
